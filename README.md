@@ -44,7 +44,7 @@ MIT License
 
 ## 作者
 
-[MA22-1144F](ma221144@senshu-u.jp)
+[MA22-1144F](mailto:ma221144@senshu-u.jp)
 
 ## 関連
 
