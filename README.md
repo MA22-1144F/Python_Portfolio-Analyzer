@@ -42,6 +42,10 @@ python main.py
 
 MIT License
 
+## 作者
+
+[MA22-1144F](ma221144@senshu-u.jp)
+
 ## 関連
 
 本ソフトウェアは，専修大学経営学部 2025年度卒業論文の成果物です．
