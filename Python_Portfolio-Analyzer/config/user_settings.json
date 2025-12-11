@@ -1,0 +1,396 @@
+{
+  "app": {
+    "name": "Portfolio Analyzer",
+    "version": "1.0.0"
+  },
+  "window": {
+    "width": 1200,
+    "height": 700,
+    "min_width": 800,
+    "min_height": 600,
+    "last_tab_index": 1,
+    "geometry": "AdnQywADAAAAAAFkAAAA3gAABhMAAAPmAAABZAAAAP0AAAYTAAAD5gAAAAAAAAAAB4AAAAFkAAAA/QAABhMAAAPm"
+  },
+  "analysis": {
+    "default_risk_free_rate": 0.0,
+    "default_span": "日次",
+    "default_period_days": 365,
+    "min_data_points": {
+      "日次": 30,
+      "週次": 20,
+      "月次": 12,
+      "年次": 3
+    },
+    "min_coverage_ratio": 0.7,
+    "frontier_points": {
+      "default": 50,
+      "min": 10,
+      "max": 200
+    },
+    "time_conversion_factors": {
+      "business_days_per_year": 252,
+      "calendar_days_per_year": 365,
+      "weeks_per_year": 52,
+      "months_per_year": 12
+    },
+    "time_conversion": {
+      "日次": {
+        "to_weekly": 7,
+        "to_monthly": 30,
+        "to_yearly": 365
+      },
+      "週次": {
+        "to_daily": 0.142857,
+        "to_monthly": 4,
+        "to_yearly": 52
+      },
+      "月次": {
+        "to_daily": 0.033333,
+        "to_weekly": 0.25,
+        "to_yearly": 12
+      },
+      "年次": {
+        "to_daily": 0.00274,
+        "to_weekly": 0.019231,
+        "to_monthly": 0.083333
+      }
+    },
+    "risk_conversion": {
+      "日次": {
+        "to_weekly": 2.645751,
+        "to_monthly": 5.477226,
+        "to_yearly": 19.104973
+      },
+      "週次": {
+        "to_daily": 0.377964,
+        "to_monthly": 2.0,
+        "to_yearly": 7.211103
+      },
+      "月次": {
+        "to_daily": 0.182574,
+        "to_weekly": 0.5,
+        "to_yearly": 3.464102
+      },
+      "年次": {
+        "to_daily": 0.052315,
+        "to_weekly": 0.138675,
+        "to_monthly": 0.288675
+      }
+    },
+    "default_market_portfolio": "Nikkei 225 (^N225)",
+    "sample_weights": [
+      0.3,
+      0.5,
+      0.2
+    ],
+    "default_deviation_score": 50.0,
+    "correlation_matrix": {
+      "min_data_points": 10,
+      "min_coverage_ratio": 0.3
+    },
+    "price_series": {
+      "rows_per_page": 200,
+      "batch_size": 50
+    }
+  },
+  "ui": {
+    "theme": "dark",
+    "colors": {
+      "dark": {
+        "background": "#2b2b2b",
+        "surface": "#3c3c3c",
+        "surface_hover": "#4c4c4c",
+        "border": "#555555",
+        "text_primary": "#ffffff",
+        "text_secondary": "#aaaaaa",
+        "text_disabled": "#999999",
+        "text_accent": "#0078d4",
+        "primary": "#0078d4",
+        "primary_hover": "#106ebe",
+        "secondary": "#28a745",
+        "secondary_hover": "#218838",
+        "danger": "#dc3545",
+        "danger_hover": "#c82333",
+        "info": "#2196F3",
+        "info_hover": "#42A5F5",
+        "grid": "#444444",
+        "grid_alpha": "rgba(255,255,255,0.3)",
+        "zero_line_alpha": "rgba(255,255,255,0.5)",
+        "checkbox_unchecked": "#888888",
+        "checkbox_checked": "#2196F3",
+        "checkbox_hover": "#4c4c4c",
+        "disabled_background": "#555555",
+        "risk_free_line": "yellow",
+        "average_risk_line": "blue"
+      },
+      "light": {
+        "background": "#ffffff",
+        "surface": "#f8f9fa",
+        "surface_hover": "#e9ecef",
+        "border": "#dee2e6",
+        "text_primary": "#000000",
+        "text_secondary": "#6c757d",
+        "text_disabled": "#adb5bd",
+        "text_accent": "#0078d4",
+        "primary": "#0078d4",
+        "primary_hover": "#106ebe",
+        "secondary": "#28a745",
+        "secondary_hover": "#218838",
+        "danger": "#dc3545",
+        "danger_hover": "#c82333",
+        "info": "#2196F3",
+        "info_hover": "#42A5F5",
+        "grid": "#dee2e6",
+        "grid_alpha": "rgba(0,0,0,0.1)",
+        "zero_line_alpha": "rgba(0,0,0,0.2)",
+        "checkbox_unchecked": "#6c757d",
+        "checkbox_checked": "#2196F3",
+        "checkbox_hover": "#e9ecef",
+        "disabled_background": "#e9ecef",
+        "risk_free_line": "orange",
+        "average_risk_line": "blue"
+      }
+    },
+    "plotly_colors": {
+      "range_bg": "rgba(70,70,70,0.8)",
+      "range_border": "rgba(255,255,255,0.5)",
+      "selector_bg": "rgba(70,70,70,0.8)",
+      "selector_active": "rgba(0,120,212,0.8)",
+      "legend_bg": "rgba(0,0,0,0.7)"
+    },
+    "fonts": {
+      "tiny": 9,
+      "small": 10,
+      "normal": 11,
+      "medium": 12,
+      "large": 14,
+      "title": 18
+    },
+    "alpha": {
+      "light": 0.15,
+      "medium": 0.25,
+      "strong": 0.5,
+      "grid": 0.7
+    },
+    "chart": {
+      "default_width": 10,
+      "default_height": 8,
+      "default_dpi": 100,
+      "scale_threshold": 0.95,
+      "colorbar_width_threshold": 0.1,
+      "title_y_position": 0.995,
+      "title_fontsize": 14
+    },
+    "sizes": {
+      "progress_bar_height": 18,
+      "status_label_height": 12,
+      "quality_info_height": 30,
+      "button_min_width": 60,
+      "header_button_height": 25,
+      "small_button_width": 80,
+      "medium_button_width": 120,
+      "large_button_width": 180,
+      "empty_state_min_height": 80,
+      "empty_state_max_height": 150,
+      "button_height": 15,
+      "button_font_size": 10,
+      "button_border_radius": 4,
+      "tile_collapsed_height": 50,
+      "status_bar_timer_interval": 5000
+    },
+    "dialogs": {
+      "weight_allocation": {
+        "width": 450,
+        "height": 500
+      }
+    },
+    "spinbox": {
+      "risk_free": {
+        "min": -10.0,
+        "max": 10.0,
+        "step": 0.001,
+        "default": 0.0
+      },
+      "min_weight": {
+        "min": 0.0,
+        "max": 100.0,
+        "step": 0.001,
+        "default": 0.0
+      },
+      "max_weight": {
+        "min": 0.0,
+        "max": 100.0,
+        "step": 0.001,
+        "default": 100.0
+      },
+      "custom_weight": {
+        "min": 0.1,
+        "max": 100.0,
+        "step": 0.1,
+        "default": 10.0
+      },
+      "total_weight": {
+        "min": 1.0,
+        "max": 500.0,
+        "step": 0.1,
+        "default": 100.0
+      },
+      "interest_rate": {
+        "min": 0.0,
+        "max": 20.0,
+        "step": 0.1,
+        "default": 0.5
+      }
+    },
+    "button_types": {
+      "primary": {
+        "width": 100,
+        "bg_color": "#0078d4",
+        "hover_color": "#106ebe",
+        "text_color": "#ffffff"
+      },
+      "secondary": {
+        "width": 80,
+        "bg_color": "#7e13e3",
+        "hover_color": "#6201c4",
+        "text_color": "#ffffff"
+      },
+      "export": {
+        "width": 90,
+        "bg_color": "#28a745",
+        "hover_color": "#218838",
+        "text_color": "#ffffff"
+      },
+      "save": {
+        "width": 80,
+        "bg_color": "#1a8408",
+        "hover_color": "#106e1e",
+        "text_color": "#ffffff"
+      },
+      "danger": {
+        "width": 70,
+        "bg_color": "#dc3545",
+        "hover_color": "#c82333",
+        "text_color": "#ffffff"
+      },
+      "info": {
+        "width": 60,
+        "bg_color": "#6c757d",
+        "hover_color": "#5a6268",
+        "text_color": "#ffffff"
+      },
+      "small": {
+        "width": 50,
+        "bg_color": "#6f42c1",
+        "hover_color": "#5a32a3",
+        "text_color": "#ffffff"
+      },
+      "neutral": {
+        "width": 70,
+        "bg_color": "#6c757d",
+        "hover_color": "#545b62",
+        "text_color": "#ffffff"
+      }
+    },
+    "layout": {
+      "main_margins": [
+        5,
+        5,
+        5,
+        5
+      ],
+      "main_spacing": 3,
+      "header_spacing": 8,
+      "content_spacing": 5
+    },
+    "analysis_widget_sizes": {
+      "price_series": {
+        "min_height": 600,
+        "preferred_height": 650,
+        "min_width": 800,
+        "preferred_width": 900
+      },
+      "return_risk_analysis": {
+        "min_height": 800,
+        "preferred_height": 850,
+        "min_width": 700,
+        "preferred_width": 800
+      },
+      "correlation_matrix": {
+        "min_height": 600,
+        "preferred_height": 650,
+        "min_width": 600,
+        "preferred_width": 700
+      },
+      "efficient_frontier": {
+        "min_height": 600,
+        "preferred_height": 700,
+        "min_width": 800,
+        "preferred_width": 900
+      },
+      "capital_market_line": {
+        "min_height": 500,
+        "preferred_height": 600,
+        "min_width": 700,
+        "preferred_width": 800
+      },
+      "security_market_line": {
+        "min_height": 500,
+        "preferred_height": 600,
+        "min_width": 700,
+        "preferred_width": 800
+      }
+    },
+    "default_analysis_size": {
+      "min_height": 400,
+      "preferred_height": 500,
+      "min_width": 600,
+      "preferred_width": 700
+    },
+    "resolution_scaling": {
+      "reference_width": 1920,
+      "reference_height": 1080,
+      "scale_factor_min": 0.7,
+      "scale_factor_max": 1.5
+    }
+  },
+  "market": {
+    "portfolios": {
+      "Nikkei 225 (^N225)": {
+        "ticker": "^N225",
+        "name": "Nikkei 225",
+        "country": "Japan",
+        "currency": "JPY",
+        "description": "日経平均株価"
+      },
+      "NASDAQ Composite (^IXIC)": {
+        "ticker": "^IXIC",
+        "name": "NASDAQ Composite",
+        "country": "United States",
+        "currency": "USD",
+        "description": "NASDAQ総合指数"
+      },
+      "S&P 500 (^GSPC)": {
+        "ticker": "^GSPC",
+        "name": "S&P 500",
+        "country": "United States",
+        "currency": "USD",
+        "description": "S&P500指数"
+      },
+      "Dow Jones Industrial Average (^DJI)": {
+        "ticker": "^DJI",
+        "name": "Dow Jones Industrial Average",
+        "country": "United States",
+        "currency": "USD",
+        "description": "ダウ工業株30種"
+      }
+    }
+  },
+  "data": {
+    "cache_enabled": true,
+    "cache_duration_days": 1
+  },
+  "portfolio": {
+    "custom_folder": "C:/Users/Ngipc/Documents/ALL_portfolio_analyzer/portfolio_analyzer/portfolios"
+  }
+}
