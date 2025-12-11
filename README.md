@@ -1,6 +1,7 @@
 
 # Portfolio-Analyzer
 
+<img src="images/icon.png" alt="icon" width="600">
 クロスアセット対応ポートフォリオ最適化・分析ソフトウェア
 
 ## 概要
@@ -44,7 +45,7 @@ MIT License
 
 ## 作者
 
-MA22-1144F:ma221144(at)senshu-u.jp
+MA22-1144F: ma221144(at)senshu-u.jp
 
 ## 関連
 
