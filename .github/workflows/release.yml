@@ -1,0 +1,210 @@
+name: Multi-Platform Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+        
+permissions:
+  contents: write
+  
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        cd portfolio_analyzer
+        pip install -r requirements.txt
+        pip install pyinstaller pillow
+
+    - name: Generate Windows icon
+      run: |
+        cd portfolio_analyzer
+        python generate_icon.py
+
+    - name: Build Windows application
+      run: |
+        cd portfolio_analyzer
+        pyinstaller --clean portfolio_analyzer.spec
+
+    - name: Create ZIP archive
+      shell: bash
+      run: |
+        cd portfolio_analyzer/dist
+        7z a -tzip ../../PortfolioAnalyzer-Windows.zip PortfolioAnalyzer.exe
+
+    - name: Upload Windows artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-build
+        path: |
+          PortfolioAnalyzer-Windows.zip
+          portfolio_analyzer/dist/PortfolioAnalyzer.exe
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        cd portfolio_analyzer
+        pip3 install -r requirements.txt
+        pip3 install pyinstaller pillow
+
+    - name: Generate macOS icon
+      run: |
+        cd portfolio_analyzer
+        python3 generate_icon_mac.py
+
+    - name: Build macOS application
+      run: |
+        cd portfolio_analyzer
+        pyinstaller --clean portfolio_analyzer_mac.spec
+
+    - name: Create DMG
+      run: |
+        brew install create-dmg
+        cd portfolio_analyzer
+        create-dmg \
+          --volname "Portfolio Analyzer" \
+          --volicon "assets/icons/app_icon.icns" \
+          --window-pos 200 120 \
+          --window-size 600 400 \
+          --icon-size 100 \
+          --icon "PortfolioAnalyzer.app" 175 120 \
+          --hide-extension "PortfolioAnalyzer.app" \
+          --app-drop-link 425 120 \
+          --no-internet-enable \
+          "PortfolioAnalyzer-macOS.dmg" \
+          "dist/PortfolioAnalyzer.app" || \
+        create-dmg \
+          --volname "Portfolio Analyzer" \
+          "PortfolioAnalyzer-macOS.dmg" \
+          "dist/PortfolioAnalyzer.app"
+
+    - name: Upload macOS artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-build
+        path: portfolio_analyzer/PortfolioAnalyzer-macOS.dmg
+
+  create-release:
+    name: Create Release
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download Windows artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: windows-build
+        path: ./artifacts/windows
+
+    - name: Download macOS artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: macos-build
+        path: ./artifacts/macos
+
+    - name: Display downloaded files
+      run: |
+        echo "Windows artifacts:"
+        ls -la ./artifacts/windows/
+        echo ""
+        echo "macOS artifacts:"
+        ls -la ./artifacts/macos/
+
+    - name: Get version
+      id: version
+      run: |
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/}
+        elif [[ "${{ github.event.inputs.version }}" != "" ]]; then
+          VERSION=${{ github.event.inputs.version }}
+        else
+          VERSION="v$(date +'%Y.%m.%d')"
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Release version: $VERSION"
+
+    - name: Generate release notes
+      id: notes
+      run: |
+        cat > release_notes.md << 'EOF'
+        ## Portfolio Analyzer ${{ steps.version.outputs.version }}
+
+        ### Downloads
+
+        | OS | ファイル | 説明 |
+        |----|----------|------|
+        | Windows | `PortfolioAnalyzer.exe` | 単体実行ファイル |
+        | Windows | `PortfolioAnalyzer-Windows.zip` | ZIP圧縮版 |
+        | macOS | `PortfolioAnalyzer-macOS.dmg` | ディスクイメージ |
+
+        ### Installation
+
+        #### Windows
+        1. `PortfolioAnalyzer.exe` をダウンロード
+        2. 実行（初回は「詳細情報」→「実行」をクリック）
+
+        #### macOS
+        1. `PortfolioAnalyzer-macOS.dmg` をダウンロード
+        2. DMGを開き、Applicationsフォルダにドラッグ
+        3. 初回は右クリック →「開く」で起動
+
+        ### Requirements
+
+        - **Windows**: Windows 10 以降
+        - **macOS**: macOS 10.13 (High Sierra) 以降
+
+        ### Notes
+
+        - Pythonのインストールは不要です
+        - 全ての依存ライブラリが同梱されています
+        EOF
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ steps.version.outputs.version }}
+        body_path: release_notes.md
+        files: |
+          ./artifacts/windows/PortfolioAnalyzer-Windows.zip
+          ./artifacts/windows/portfolio_analyzer/dist/PortfolioAnalyzer.exe
+          ./artifacts/macos/PortfolioAnalyzer-macOS.dmg
+        draft: false
+        prerelease: false
+        tag_name: ${{ steps.version.outputs.version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
