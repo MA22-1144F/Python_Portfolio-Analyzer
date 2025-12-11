@@ -41,7 +41,7 @@ python main.py
 
 ## ライセンス
 
-MIT License
+[MIT License](LICENSE)
 
 ## 作者
 
