@@ -20,14 +20,15 @@ VSVersionInfo(
         u'040904B0',
         [StringStruct(u'CompanyName', u'MA22-1144F'),
         StringStruct(u'FileDescription', u'Portfolio Analyzer - Investment Portfolio Analysis Tool'),
-        StringStruct(u'FileVersion', u'1.0.0.0'),
+        StringStruct(u'FileVersion', u'1.0.0.1'),
         StringStruct(u'InternalName', u'PortfolioAnalyzer'),
         StringStruct(u'LegalCopyright', u'Copyright (c) 2024 MA22-1144F'),
         StringStruct(u'OriginalFilename', u'PortfolioAnalyzer.exe'),
         StringStruct(u'ProductName', u'Portfolio Analyzer'),
-        StringStruct(u'ProductVersion', u'1.0.0.0')])
+        StringStruct(u'ProductVersion', u'1.0.0.1')])
       ]
     ),
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]
+
 )
