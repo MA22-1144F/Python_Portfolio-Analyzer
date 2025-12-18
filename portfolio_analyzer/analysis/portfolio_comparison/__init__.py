@@ -56,6 +56,12 @@ from .frontier_comparison import (
     create_frontier_comparison_matplotlib_chart
 )
 
+from .downside_deviation_frontier_comparison import (
+    PortfolioDownsideDeviationFrontierCalculator,
+    create_downside_deviation_frontier_comparison_plotly_chart,
+    create_downside_deviation_frontier_comparison_matplotlib_chart
+)
+
 from .market_comparison import (
     PortfolioMarketComparison,
     create_market_comparison_plotly_chart,
@@ -93,6 +99,10 @@ __all__ = [
     'extract_portfolio_price_data',
     'create_frontier_comparison_plotly_chart',
     'create_frontier_comparison_matplotlib_chart',
+
+    'PortfolioDownsideDeviationFrontierCalculator',
+    'create_downside_deviation_frontier_comparison_plotly_chart',
+    'create_downside_deviation_frontier_comparison_matplotlib_chart',
 
     'PortfolioMarketComparison',
     'create_market_comparison_plotly_chart',
