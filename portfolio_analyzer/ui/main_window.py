@@ -401,7 +401,7 @@ class MainWindow(QMainWindow):
     
     def show_about(self):
         """バージョン情報"""
-        about = """Portfolio Analyzer v1.0.0
+        about = """Portfolio Analyzer v1.0.1
 
 ポートフォリオ最適化分析ツール
 
