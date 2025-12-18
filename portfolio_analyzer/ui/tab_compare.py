@@ -43,7 +43,8 @@ from analysis.portfolio_comparison import (
     radar_chart,
     price_evolution,
     actual_vs_theoretical,
-    frontier_comparison
+    frontier_comparison,
+    downside_deviation_frontier_comparison
 )
 
 class MatplotlibCanvas(FigureCanvas):
@@ -614,6 +615,9 @@ class CompareTab(QWidget):
         # サブタブ5: 効率的フロンティア比較
         self.summary_tabs.addTab(self._create_frontier_comparison_tab(), "フロンティア比較")
         
+        # サブタブ5.5: 下方偏差フロンティア比較
+        self.summary_tabs.addTab(self._create_downside_deviation_frontier_comparison_tab(), "下方偏差フロンティア比較")
+
         # サブタブ6: 市場との比較
         self.summary_tabs.addTab(self._create_market_comparison_tab(), "市場比較")
         
@@ -966,6 +970,53 @@ class CompareTab(QWidget):
 
         return tab
     
+    def _create_downside_deviation_frontier_comparison_tab(self) -> QWidget:
+        """下方偏差フロンティア比較タブ"""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+
+        # ボタン配置
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+
+        self.dd_frontier_browser_button = QPushButton("ブラウザで表示")
+        self.dd_frontier_browser_button.setStyleSheet(self.styles.get_button_style_by_type("primary"))
+        self.dd_frontier_browser_button.setEnabled(False)
+        self.dd_frontier_browser_button.clicked.connect(lambda: self._open_chart_in_browser('dd_frontier'))
+        button_layout.addWidget(self.dd_frontier_browser_button)
+
+        self.dd_frontier_export_button = QPushButton("HTML保存")
+        self.dd_frontier_export_button.setStyleSheet(self.styles.get_button_style_by_type("save"))
+        self.dd_frontier_export_button.setEnabled(False)
+        self.dd_frontier_export_button.clicked.connect(lambda: self._export_chart('dd_frontier'))
+        button_layout.addWidget(self.dd_frontier_export_button)
+
+        layout.addLayout(button_layout)
+
+        # プレースホルダー
+        self.dd_frontier_placeholder = QLabel(
+            "分析を実行すると，各ポートフォリオの下方偏差フロンティアが表示されます\n\n"
+            "表示内容:\n"
+            "- Minimum Downside Deviation Frontier (最小下方偏差フロンティア)\n"
+            "- Efficient Downside Deviation Frontier (効率的下方偏差フロンティア)\n"
+            "- Global Minimum Downside Deviation Portfolio (全体最小下方偏差ポートフォリオ)\n"
+            "- Capital Allocation Line (資本配分線 - ソルティノレシオ使用)\n"
+            "- Tangency Portfolio (接点ポートフォリオ - ソルティノレシオ最大化)\n"
+            "- Risk-free Rate (無リスク利子率)\n"
+            "- Current Portfolio Position (現在のポートフォリオ位置)"
+        )
+        self.dd_frontier_placeholder.setAlignment(Qt.AlignCenter)
+        self.dd_frontier_placeholder.setStyleSheet("color: #888; font-size: 11px;")
+        layout.addWidget(self.dd_frontier_placeholder)
+
+        # Matplotlibキャンバス（アプリ内表示用）
+        if MATPLOTLIB_AVAILABLE:
+            self.dd_frontier_canvas = MatplotlibCanvas(parent=tab, width=10, height=8)
+            self.dd_frontier_canvas.setVisible(False)
+            layout.addWidget(self.dd_frontier_canvas)
+
+        return tab
+
     def _create_market_comparison_tab(self) -> QWidget:
         """市場ポートフォリオとの比較タブ"""
         tab = QWidget()
@@ -2420,6 +2471,7 @@ class CompareTab(QWidget):
             self._create_heatmap_chart()
             self._create_radar_chart()
             self._create_frontier_comparison_chart()
+            self._create_downside_deviation_frontier_comparison_chart()
             self._create_market_comparison_chart()
             self._create_price_evolution_chart()
             self._create_actual_vs_theoretical_chart()
@@ -2610,6 +2662,79 @@ class CompareTab(QWidget):
 
         except Exception as e:
             self.logger.error(f"フロンティア比較チャート生成エラー: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
+
+    def _create_downside_deviation_frontier_comparison_chart(self):
+        """下方偏差フロンティア比較チャートを生成"""
+        try:
+            if not PLOTLY_AVAILABLE:
+                self.logger.warning("Plotlyが利用できません")
+                return
+
+            portfolios = list(self.selected_portfolios.values())
+            price_data = self.analysis_results.get('price_data', {})
+            all_metrics = self.analysis_results.get('metrics', {})
+
+            if not price_data:
+                self.logger.warning("価格データがありません")
+                return
+
+            if len(portfolios) == 0:
+                self.logger.warning("選択されたポートフォリオがありません")
+                return
+
+            # 無リスク利子率を取得（分析条件から）
+            risk_free_rate = 0.0
+            if hasattr(self, 'interest_rate_spin'):
+                risk_free_rate = self.interest_rate_spin.value() / 100.0
+                self.logger.info(f"無リスク利子率（年率）: {risk_free_rate:.4f} ({risk_free_rate*100:.2f}%)")
+
+            # スパン調整
+            span = self.span_combo.currentText() if hasattr(self, 'span_combo') else '日次'
+            span_risk_free_rate = self._convert_risk_free_rate_to_span(risk_free_rate, span)
+            self.logger.info(f"無リスク利子率（{span}調整後）: {span_risk_free_rate:.6f} ({span_risk_free_rate*100:.4f}%)")
+
+            # Plotlyチャートを作成（downside_deviation_frontier_comparisonモジュールを使用）
+            fig = downside_deviation_frontier_comparison.create_downside_deviation_frontier_comparison_plotly_chart(
+                portfolios,
+                price_data,
+                all_metrics,
+                span_risk_free_rate,
+                self.config
+            )
+
+            if fig:
+                # チャートを保存
+                self._save_chart_to_temp_file(fig, 'dd_frontier')
+
+                # ボタンを有効化
+                if hasattr(self, 'dd_frontier_browser_button'):
+                    self.dd_frontier_browser_button.setEnabled(True)
+                if hasattr(self, 'dd_frontier_export_button'):
+                    self.dd_frontier_export_button.setEnabled(True)
+                if hasattr(self, 'dd_frontier_placeholder'):
+                    self.dd_frontier_placeholder.setVisible(False)
+
+                self.logger.info("下方偏差フロンティア比較Plotlyチャートを生成しました")
+
+            # Matplotlibチャートを作成（アプリ内表示用）
+            if MATPLOTLIB_AVAILABLE and hasattr(self, 'dd_frontier_canvas'):
+                matplotlib_fig = downside_deviation_frontier_comparison.create_downside_deviation_frontier_comparison_matplotlib_chart(
+                    portfolios,
+                    price_data,
+                    all_metrics,
+                    span_risk_free_rate,
+                    self.config
+                )
+
+                if matplotlib_fig:
+                    self.dd_frontier_canvas.display_figure(matplotlib_fig)
+                    self.dd_frontier_canvas.setVisible(True)
+                    self.logger.info("下方偏差フロンティア比較Matplotlibチャートを生成しました")
+
+        except Exception as e:
+            self.logger.error(f"下方偏差フロンティア比較チャート生成エラー: {e}")
             import traceback
             self.logger.error(traceback.format_exc())
 
