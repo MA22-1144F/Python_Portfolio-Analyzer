@@ -2,7 +2,7 @@
 # Portfolio-Analyzer
 
 <img src="portfolio_analyzer/assets/icons/app_icon.png" alt="icon" width="200">
-クロスアセット対応ポートフォリオ最適化・分析ソフトウェア
+クロスアセット対応ポートフォリオ最適化分析ソフトウェア
 
 ## Overview
 
