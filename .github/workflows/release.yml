@@ -176,17 +176,17 @@ jobs:
 
         #### Windows
         1. `PortfolioAnalyzer.exe` をダウンロード
-        2. 実行（初回は「詳細情報」→「実行」をクリック）
+        2. 実行
 
         #### macOS
         1. `PortfolioAnalyzer-macOS.dmg` をダウンロード
         2. DMGを開き、Applicationsフォルダにドラッグ
-        3. 初回は右クリック →「開く」で起動
+        3. 実行
 
         ### Requirements
 
         - **Windows**: Windows 10 以降
-        - **macOS**: macOS 10.13 (High Sierra) 以降
+        - **macOS**: macOS 10.13 以降
 
         ### Notes
 
